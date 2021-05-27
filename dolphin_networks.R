@@ -1,9 +1,5 @@
-install.packages("usethis")
-library("usethis")
-use_git_config(user.name = "laurenbastian", user.email = "laurenlbastian@gmail.com")
-
 ## set working directory
-setwd("~/Blackwell Scholars Workshop/dolphins")
+setwd("~/Blackwell Scholars Workshop/dolphins/DolphinNetworks")
 
 ## load the multiplex package and read file
 library("multiplex")
