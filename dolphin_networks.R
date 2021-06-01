@@ -46,7 +46,16 @@ adj.mat = matrix(0, nrow = 62, ncol = 62)
 while (stubs != 0) {
   ##randomly select two nodes and connect them
   node1 = floor(runif(1, min = 1, max = length(names)))
+  while (dolphin.deg.seq[node1] == 0)
+  {
+    node1 = floor(runif(1, min = 1, max = length(names)))
+  }
   node2 = floor(runif(1, min = 1, max = length(names)))
+  while (dolphin.deg.seq[node2] == 0)
+  {
+    node2 = floor(runif(1, min = 1, max = length(names)))
+  }
+  
   
   ## if the generated nodes are not equal, both nodes still have
   ## stubs, and there is not an edge between the two nodes, 
@@ -56,10 +65,10 @@ while (stubs != 0) {
       dolphin.deg.seq[node1] != 0 && dolphin.deg.seq[node2] != 0 && 
       adj.mat[node1, node2] == 0 && adj.mat[node2, node1] == 0)
   {
-    adj.mat[node1, node2] = 1
-    adj.mat[node2, node1] = 1
     dolphin.deg.seq[node1] = dolphin.deg.seq[node1] - 1
     dolphin.deg.seq[node2] = dolphin.deg.seq[node2] - 1
+    adj.mat[node1, node2] = 1
+    adj.mat[node2, node1] = 1
     stubs = stubs - 2
   }
 }
