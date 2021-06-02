@@ -13,7 +13,7 @@ pairs.list = c(pairs$S, pairs$R)
 names = unique(pairs.list)
 
 ## construct a degree sequence for the dolphin data
-dolphin.deg.seq = numeric(length = 62)
+dolphin.deg.seq = numeric(length = length(names))
 
 for (i in 1:length(names))
 {
@@ -95,11 +95,11 @@ configure.valid.networks = function(deg.seq, reps)
     for (j in 1:nrow(rand.mat))
     {
       ##if there is a self-loop, matrix is invalid
-      if(rand.mat[j, j] > 0)
+      if(rand.mat[j, j] != 0)
       {
-        is.valid.mat = FALSE
-        break
-      }
+       is.valid.mat = FALSE
+       break
+      #}
       for (k in 1:ncol(rand.mat))
       {
         ## if there is a multi-edge, matrix is invalid
@@ -110,6 +110,7 @@ configure.valid.networks = function(deg.seq, reps)
         }
       }
     }
+    ## if the matrix is valid, add it to the list and increment i
     if (is.valid.mat)
     {
       sim.matrices[[i]] = rand.mat
@@ -120,7 +121,86 @@ configure.valid.networks = function(deg.seq, reps)
   return (sim.matrices)
 }
 
+configure.valid.networks(dolphin.deg.seq, 1)
+
 configure.valid.networks(test.deg.seq, 5)
 
+## checking uniformity
+##THIS IS VERY MUCH NOT UNIFORM SOMETHING IS UP
+##LIKELY AN ERROR IN THE VALID NETWORKS FUNCTION??
+a = matrix(data = c(0,0,0,1,0,0,1,1,0,1,0,1,1,1,1,0), nrow = 4)
+b = matrix(data = c(0,0,1,1,0,0,0,1,1,0,0,1,1,1,1,0), nrow = 4)
+c = matrix(data = c(0,1,0,1,1,0,0,1,0,0,0,1,1,1,1,0), nrow = 4)
+d = matrix(data = c(0,1,1,1,1,0,1,0,1,1,0,0,1,0,0,0), nrow = 4)
+e = matrix(data = c(0,1,1,1,1,0,0,1,1,0,0,0,1,1,0,0), nrow = 4)
+f = matrix(data = c(0,1,1,1,1,0,0,0,1,0,0,1,1,0,1,0), nrow = 4)
+g = matrix(data = c(0,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0), nrow = 4)
+h = matrix(data = c(0,1,0,1,1,0,1,1,0,1,0,0,1,1,0,0), nrow = 4)
+i = matrix(data = c(0,1,0,0,1,0,1,1,0,1,0,1,0,1,1,0), nrow = 4)
+j = matrix(data = c(0,1,1,0,1,0,1,0,1,1,0,1,0,0,1,0), nrow = 4)
+k = matrix(data = c(0,0,1,1,0,0,1,0,1,1,0,1,1,0,1,0), nrow = 4)
+l = matrix(data = c(0,0,1,0,0,0,1,1,1,1,0,1,0,1,1,0), nrow = 4)
 
+reps = 1000 
+
+test.nets = configure.valid.networks(test.deg.seq, reps)
+
+test.freq = numeric(reps)
+
+for(i in 1:reps)
+{
+  if(identical(test.nets[[i]], a))
+  {
+    test.freq[i] = 1
+  }
+  else if(identical(test.nets[[i]], b))
+  {
+    test.freq[i] = 2
+  }
+  else if(identical(test.nets[[i]], c))
+  {
+    test.freq[i] = 3
+  }
+  else if(identical(test.nets[[i]], d))
+  {
+    test.freq[i] = 4
+  }
+  else if(identical(test.nets[[i]], e))
+  {
+    test.freq[i] = 5
+  }
+  else if(identical(test.nets[[i]], f))
+  {
+    test.freq[i] = 6
+  }
+  else if(identical(test.nets[[i]], g))
+  {
+    test.freq[i] = 7
+  }
+  else if(identical(test.nets[[i]], h))
+  {
+    test.freq[i] = 8
+  }
+  else if(identical(test.nets[[i]], i))
+  {
+    test.freq[i] = 9
+  }
+  else if(identical(test.nets[[i]], j))
+  {
+    test.freq[i] = 10
+  }
+  else if(identical(test.nets[[i]], k))
+  {
+    test.freq[i] = 11
+  }
+  else if(identical(test.nets[[i]], l))
+  {
+    test.freq[i] = 12
+  }
+  else
+  {
+    test.freq[i] = 13
+  }
+}
+hist(test.freq)
 
