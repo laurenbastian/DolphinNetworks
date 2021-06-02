@@ -12,7 +12,7 @@ pairs.list = c(pairs$S, pairs$R)
 ## get the names of each dolphin
 names = unique(pairs.list)
 
-## construct a degree array
+## construct a degree sequence for the dolphin data
 dolphin.deg.seq = numeric(length = 62)
 
 for (i in 1:length(names))
@@ -27,48 +27,100 @@ for (i in 1:length(names))
   }
 }
 
-## View degree sequence, confirm sum of degrees is even
-dolphin.deg.seq = as.integer(dolphin.deg.seq)
-dolphin.deg.seq
-sum(dolphin.deg.seq)
+## A function to generate random networks using Configuration Model
+## given a degree sequence
+## randomly select two stubs from stubs.vec and connect them
+## remove selected stubs from stubs.vec and take num.stubs - 2
+## continue until no stubs remain.
+## this algorithm will return an adjacency matrix 
+## NOTE: THIS ALGORITHM MAY PRODUCE MATRICES WITH SELF-LOOPS
+## AND MULTI-EDGES!
 
-## Generate random networks using Configuration Model
-## stubs: counts the number of unpaired stubs
-## adj.mat: a 62x62 adjacency matrix
-## this algorithm will generate a 62x62 adjacency matrix 
-## in which self-loops and multi-edges are not permitted
-## if a matrix is generated with a self-loop or a multi-edge,
-## discard the matrix and generate a new one
-stubs = sum(dolphin.deg.seq)
-
-adj.mat = matrix(0, nrow = 62, ncol = 62)
-
-while (stubs != 0) {
-  ##randomly select two nodes and connect them
-  node1 = floor(runif(1, min = 1, max = length(names)))
-  while (dolphin.deg.seq[node1] == 0)
+configuration.model = function(deg.seq)
+{
+  ## invalid if the sum of the degree sequence is odd
+  if(sum(deg.seq) %% 2 == 1)
   {
-    node1 = floor(runif(1, min = 1, max = length(names)))
+    return (NULL)
   }
-  node2 = floor(runif(1, min = 1, max = length(names)))
-  while (dolphin.deg.seq[node2] == 0)
+
+  ##generate the vector of stubs
+  stubs.vec = numeric(0)
+  for (i in 1:length(deg.seq))
   {
-    node2 = floor(runif(1, min = 1, max = length(names)))
+    stubs.vec = c(stubs.vec, rep(i, deg.seq[i]))
   }
   
+  ##set number of stubs
+  num.stubs = length(stubs.vec)
   
-  ## if the generated nodes are not equal, both nodes still have
-  ## stubs, and there is not an edge between the two nodes, 
-  ## connect them and update the stubs count
-  ## otherwise, the stubs count is not updated
-  if (node1 != node2 && 
-      dolphin.deg.seq[node1] != 0 && dolphin.deg.seq[node2] != 0 && 
-      adj.mat[node1, node2] == 0 && adj.mat[node2, node1] == 0)
+  ## create adjacency matrix
+  adj.mat = matrix(0, nrow = length(deg.seq), ncol = length(deg.seq))
+  
+  while(num.stubs > 0)
   {
-    dolphin.deg.seq[node1] = dolphin.deg.seq[node1] - 1
-    dolphin.deg.seq[node2] = dolphin.deg.seq[node2] - 1
-    adj.mat[node1, node2] = 1
-    adj.mat[node2, node1] = 1
-    stubs = stubs - 2
+    ## randomly select two stubs
+    stubs = sample(x = stubs.vec, size = 2)
+  
+    ## connect the two stubs to form an edge
+    adj.mat[stubs[1], stubs[2]] = adj.mat[stubs[1], stubs[2]] + 1
+    adj.mat[stubs[2], stubs[1]] = adj.mat[stubs[2], stubs[1]] + 1
+  
+    ## remove both stubs from stubs.vec
+    stubs.vec = stubs.vec[-stubs[1]]
+    stubs.vec = stubs.vec[-stubs[2]]
+    
+    ## decrement number of stubs
+    num.stubs = num.stubs - 2
   }
+  
+  return (adj.mat)
 }
+
+## A function to generate reps number of random networks 
+## following a given degree sequence
+## without self-loops or multi-edges
+## returns a list of valid networks
+configure.valid.networks = function(deg.seq, reps)
+{
+  i = 1
+  sim.matrices = list()
+  while(i <= reps)
+  {
+    ## generate a random matrix
+    rand.mat = configuration.model(deg.seq)
+    
+    ##check if the matrix is valid
+    is.valid.mat = TRUE
+    for (j in 1:nrow(rand.mat))
+    {
+      ##if there is a self-loop, matrix is invalid
+      if(rand.mat[j, j] > 0)
+      {
+        is.valid.mat = FALSE
+        break
+      }
+      for (k in 1:ncol(rand.mat))
+      {
+        ## if there is a multi-edge, matrix is invalid
+        if(rand.mat[j, k] > 1)
+        {
+          is.valid.mat = FALSE
+          break
+        }
+      }
+    }
+    if (is.valid.mat)
+    {
+      sim.matrices[[i]] = rand.mat
+      i = i + 1
+    }
+  }
+  
+  return (sim.matrices)
+}
+
+configure.valid.networks(test.deg.seq, 5)
+
+
+
