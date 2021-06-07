@@ -27,6 +27,8 @@ for (i in 1:length(names))
   }
 }
 
+dolphin.deg.seq = sort(dolphin.deg.seq, decreasinng = TRUE)
+
 ## A function to generate random networks using Configuration Model
 ## given a degree sequence
 ## randomly select two stubs from stubs.vec and connect them
@@ -43,6 +45,9 @@ config.model = function(deg.seq)
   {
     return (NULL)
   }
+  
+  ##make sure in descending order
+  deg.seq = sort(deg.seq, decreasing = TRUE)
 
   ##generate the vector of stubs
   stubs.vec = numeric(0)
@@ -59,13 +64,9 @@ config.model = function(deg.seq)
   
   while(num.stubs > 0)
   {
-    print("START")
-    print(stubs.vec)
-    
+
     ## randomly select two stubs
     stubs = sample(stubs.vec, 2)
-    
-    print(stubs)
     
     ## connect the two stubs to form an edge
     adj.mat[stubs[1], stubs[2]] = adj.mat[stubs[1], stubs[2]] + 1
@@ -99,8 +100,6 @@ config.model = function(deg.seq)
     ## decrement number of stubs
     num.stubs = num.stubs - 2
     
-    print("END")
-    print(stubs.vec)
   }
   
   return (adj.mat)
@@ -112,6 +111,9 @@ config.model = function(deg.seq)
 ## returns a list of valid networks
 config.valid.networks = function(deg.seq, reps)
 {
+  ## make sure to sort descending
+  deg.seq = sort(deg.seq, decreasing = TRUE)
+  
   ## a list of matrices
   sim.matrices = list()
   i = 1
@@ -156,5 +158,50 @@ config.valid.networks = function(deg.seq, reps)
   ## return a list of adjacency matrices
   return (sim.matrices)
 }
+
+##Checking that the random networks are about uniformly distributed
+test = c(1,2,2,2,3)
+test.nets = config.valid.networks(test,10000)
+test.unique = unique(test.nets)
+a = test.unique[[1]]
+b = test.unique[[2]]
+c = test.unique[[3]]
+d = test.unique[[4]]
+e = test.unique[[5]]
+f = test.unique[[6]]
+
+test.dist = c()
+for (i in 1:length(test.nets))
+{
+  if (identical(test.nets[[i]], a))
+  {
+    test.dist = c(test.dist, "a")
+  }
+  if (identical(test.nets[[i]], b))
+  {
+    test.dist = c(test.dist, "b")
+  }
+  if (identical(test.nets[[i]], c))
+  {
+    test.dist = c(test.dist, "c")
+  }
+  if (identical(test.nets[[i]], d))
+  {
+    test.dist = c(test.dist, "d")
+  }
+  if (identical(test.nets[[i]], e))
+  {
+    test.dist = c(test.dist, "e")
+  }
+  if (identical(test.nets[[i]], f))
+  {
+    test.dist = c(test.dist, "f")
+  }
+}
+
+barplot(height = table(test.dist), main = "Frequency of Randomly Generated Networks")
+
+
+
 
 
