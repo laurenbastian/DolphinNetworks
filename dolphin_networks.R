@@ -1,34 +1,3 @@
-## set working directory
-setwd("~/Blackwell Scholars Workshop/dolphins/DolphinNetworks")
-
-## load the multiplex package and read file
-library("multiplex")
-pairs = read.gml("dolphins.gml")
-pairs
-
-## object used for finding degree of each node
-pairs.list = c(pairs$S, pairs$R)
-
-## get the names of each dolphin
-names = unique(pairs.list)
-
-## construct a degree sequence for the dolphin data
-dolphin.deg.seq = numeric(length = length(names))
-
-for (i in 1:length(names))
-{
-  ##calculate the number of times each name appears in the pairs list
-  for (j in 1:length(pairs.list))
-  {
-    if (names[i] == pairs.list[j])
-    {
-      dolphin.deg.seq[i] = dolphin.deg.seq[i] + 1
-    }
-  }
-}
-
-dolphin.deg.seq = sort(dolphin.deg.seq, decreasinng = TRUE)
-
 ## A function to generate random networks using Configuration Model
 ## given a degree sequence
 ## randomly select two stubs from stubs.vec and connect them
@@ -46,9 +15,6 @@ config.model = function(deg.seq)
     return (NULL)
   }
   
-  ##make sure in descending order
-  deg.seq = sort(deg.seq, decreasing = TRUE)
-
   ##generate the vector of stubs
   stubs.vec = numeric(0)
   for (i in 1:length(deg.seq))
@@ -160,7 +126,7 @@ config.valid.networks = function(deg.seq, reps)
 }
 
 ##Checking that the random networks are about uniformly distributed
-test = c(1,2,2,2,3)
+test = c(3,2,2,2,1)
 test.nets = config.valid.networks(test,10000)
 test.unique = unique(test.nets)
 a = test.unique[[1]]
@@ -202,6 +168,42 @@ for (i in 1:length(test.nets))
 barplot(height = table(test.dist), main = "Frequency of Randomly Generated Networks")
 
 
+## set working directory
+setwd("~/Blackwell Scholars Workshop/dolphins/DolphinNetworks")
+
+## load the multiplex package and read file
+library("multiplex")
+pairs = read.gml("dolphins.gml")
+pairs
+
+## object used for finding degree of each node
+pairs.list = c(pairs$S, pairs$R)
+
+## get the names of each dolphin
+names = unique(pairs.list)
+
+## construct a degree sequence for the dolphin data
+dolphin.deg.seq = numeric(length = length(names))
+
+for (i in 1:length(names))
+{
+  ##calculate the number of times each name appears in the pairs list
+  for (j in 1:length(pairs.list))
+  {
+    if (names[i] == pairs.list[j])
+    {
+      dolphin.deg.seq[i] = dolphin.deg.seq[i] + 1
+    }
+  }
+}
+dolphin.deg.seq = as.integer(dolphin.deg.seq)
+dolphin.deg.seq = sort(dolphin.deg.seq, decreasing = TRUE)
+
+## Generate networks for dolphin data
+dolphin.nets = config.valid.networks(dolphin.deg.seq, 3)
+
+###NOTE: The code creates valid networks, 
+###but produces warning messages for some reason???
 
 
 
