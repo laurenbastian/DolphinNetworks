@@ -88,31 +88,34 @@ config.valid.networks = function(deg.seq, reps)
     ## generate a random matrix
     rand.mat = config.model(deg.seq)
     
+    
+    
     ##check if the matrix is valid
     ##search for multi-edges
     is.valid.mat = TRUE
-    for (j in 1:nrow(rand.mat))
+    
+    ##check for self-loops
+    if(sum(diag(rand.mat)) != 0)
     {
-      for (k in 1:nrow(rand.mat))
+      is.valid.mat = FALSE
+    }
+    
+    if (is.valid.mat)
+    {
+      for (j in 1:nrow(rand.mat))
       {
-        ## if there is a multi-edge, matrix is invalid
-        if(rand.mat[j, k] > 1)
+        for (k in 1:nrow(rand.mat))
         {
-          is.valid.mat = FALSE
-          break
+          ## if there is a multi-edge, matrix is invalid
+          if(rand.mat[j, k] > 1)
+          {
+            is.valid.mat = FALSE
+            break
+          }
         }
       }
     }
     
-    ##check for self-loops
-    for (j in 1:nrow(rand.mat))
-    {
-      if(rand.mat[j, j] != 0)
-      {
-        is.valid.mat = FALSE
-        break
-      }
-    }
     
     ## if the matrix is valid, add it to the list and increment i
     if (is.valid.mat)
@@ -174,7 +177,6 @@ setwd("~/Blackwell Scholars Workshop/dolphins/DolphinNetworks")
 ## load the multiplex package and read file
 library("multiplex")
 pairs = read.gml("dolphins.gml")
-pairs
 
 ## object used for finding degree of each node
 pairs.list = c(pairs$S, pairs$R)
@@ -200,10 +202,10 @@ dolphin.deg.seq = as.integer(dolphin.deg.seq)
 dolphin.deg.seq = sort(dolphin.deg.seq, decreasing = TRUE)
 
 ## Generate networks for dolphin data
-dolphin.nets = config.valid.networks(dolphin.deg.seq, 3)
+start.time = Sys.time()
+dolphin.nets = config.valid.networks(dolphin.deg.seq, 1)
+end.time = Sys.time()
 
-###NOTE: The code creates valid networks, 
-###but produces warning messages for some reason???
-
-
-
+start.time = Sys.time()
+dolphin.graph = config.model(dolphin.deg.seq)
+end.time = Sys.time()
