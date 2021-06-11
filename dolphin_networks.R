@@ -91,7 +91,6 @@ config.valid.networks = function(deg.seq, reps)
     
     
     ##check if the matrix is valid
-    ##search for multi-edges
     is.valid.mat = TRUE
     
     ##check for self-loops
@@ -100,23 +99,15 @@ config.valid.networks = function(deg.seq, reps)
       is.valid.mat = FALSE
     }
     
+    ##check for multi-edges
     if (is.valid.mat)
     {
-      for (j in 1:nrow(rand.mat))
+      if(length(rand.mat[rand.mat > 1]) > 0)
       {
-        for (k in 1:nrow(rand.mat))
-        {
-          ## if there is a multi-edge, matrix is invalid
-          if(rand.mat[j, k] > 1)
-          {
-            is.valid.mat = FALSE
-            break
-          }
-        }
+        is.valid.mat = FALSE
       }
     }
-    
-    
+      
     ## if the matrix is valid, add it to the list and increment i
     if (is.valid.mat)
     {
@@ -201,7 +192,33 @@ for (i in 1:length(names))
 dolphin.deg.seq = as.integer(dolphin.deg.seq)
 dolphin.deg.seq = sort(dolphin.deg.seq, decreasing = TRUE)
 
+##construct observed adjacency matrix
+dolphin.observed.mat = matrix(data = 0, nrow = 62, ncol = 62)
+key.names.df = data.frame("Name" = names, "Number" = c(1:62))
+pairs.numbers.df = as.data.frame(pairs)
+
+##replace every name with its number
+for (i in 1:nrow(pairs.numbers.df))
+{
+  name = as.vector(key.names.df$Name[i])
+  print(name)
+  number = as.integer(key.names.df$Number[i])
+  print(number)
+  
+  pairs.numbers.df[pairs.numbers.df == name] = number
+}
+
+##fill in values to adjacency matrix
+for (i in 1:nrow(pairs.numbers.df))
+{
+  x = as.integer(pairs.numbers.df$S[i])
+  y = as.integer(pairs.numbers.df$R[i])
+  dolphin.observed.mat[x,y] = 1
+  dolphin.observed.mat[y,x] = 1
+}
+
+
 ## Generate networks for dolphin data
 start.time = Sys.time()
-dolphin.nets = config.valid.networks(dolphin.deg.seq, 14)
+dolphin.nets = config.valid.networks(dolphin.deg.seq, 1)
 end.time = Sys.time()
