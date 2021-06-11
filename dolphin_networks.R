@@ -203,9 +203,5 @@ dolphin.deg.seq = sort(dolphin.deg.seq, decreasing = TRUE)
 
 ## Generate networks for dolphin data
 start.time = Sys.time()
-dolphin.nets = config.valid.networks(dolphin.deg.seq, 1)
-end.time = Sys.time()
-
-start.time = Sys.time()
-dolphin.graph = config.model(dolphin.deg.seq)
+dolphin.nets = config.valid.networks(dolphin.deg.seq, 14)
 end.time = Sys.time()
