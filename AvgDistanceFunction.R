@@ -130,3 +130,8 @@ diameter(mytest)
 avg.distance(mytest)
 avg.efficiency(mytest)
 
+start = Sys.time()
+avg.efficiency(dolphin.observed.mat)
+end = Sys.time()
+
+
