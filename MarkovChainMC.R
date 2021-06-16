@@ -98,11 +98,11 @@ end = Sys.time()
 ##top 3 most highly connected nodes, and calculates the percent reduction
 ##in efficiency
 
-MCMC.eff = function(adj.mat, reps, burn = 0)
+MCMC.eff = function(adj.mat, reps, burn = 0, save.every = 1)
 {
   #make a vector of the edges
   edges = matrix(0, nrow = 0, ncol = 2)
-  for(i in (1):(ncol(adj.mat) - 1))
+  for(i in ((1):(ncol(adj.mat) - 1)))
   {
     for(j in (i+1):(ncol(adj.mat)))
     {
@@ -161,8 +161,9 @@ MCMC.eff = function(adj.mat, reps, burn = 0)
   }
   
   i = 1
-  ##random network generation after burn-in period
-  while(i <= reps)
+  j = 1
+  ##random network generation after burn-in period, save every kth network
+  while(i <= reps * save.every)
   {
     ##select distinct edges
     valid.edges = FALSE
@@ -200,8 +201,14 @@ MCMC.eff = function(adj.mat, reps, burn = 0)
       edges[sample[2],] = c(y,v)
     }
     
+    ##if this is the 100th sample
     ##save random matrix to the list of random networks
-    rand.nets[[i]] = rand.mat
+    if (i %% save.every == 0) 
+    {
+      rand.nets[[j]] = rand.mat
+      j = j+1
+    }
+    
     i = i+1
   }
   
@@ -246,10 +253,6 @@ MCMC.eff = function(adj.mat, reps, burn = 0)
   return (output.mat)
 }
 
-test.mat = matrix(c(0,1,1,0,1,1,0,1,0,0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,0), nrow = 5, ncol = 5)
-start = Sys.time()
-MCMC.eff(test.mat, 10, 10)
-end = Sys.time()
 
 
 
