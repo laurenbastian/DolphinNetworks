@@ -53,14 +53,13 @@ for (i in 1:nrow(pairs.numbers.df))
   dolphin.observed.mat[y,x] = 1
 }
 
-## Generate single random network for dolphin data (Configuration Model)
-## and use that network to generate 100 random networks using 
-## a Markov Chain and calculate the reduction in efficiency after
-## the top three dolphins are removed
-## this process takes about 30 minutes for 100 random networks
+
+ 
+## Use Markov Chain Monte Carlo simulation to calculate 
+##the reduction in efficiency after the top three dolphins are removed
 start = Sys.time()
-dolphin.rand.mat = config.valid.networks(dolphin.deg.seq, 1)
-dolphin.rand.mat = dolphin.rand.mat[[1]]
-efficiency.table = MCMC.eff(dolphin.rand.mat, 100, 0)
+efficiency.table = MCMC.eff(dolphin.observed.mat, 10, burn = 10000, save.every = 100)
 end = Sys.time()
+
+
 
