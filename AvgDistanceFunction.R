@@ -117,6 +117,54 @@ avg.efficiency = function(adj.mat)
 }
 
 
+
+
+##this is a function that calculates the average efficiency
+##of the initial matrix, created a reduced matrix missing the top
+##3 most connected nodes, and calculates the efficiency of the 
+##reduced matrix, a the % reduction from the origianl matrix
+##it will return calculated values in a matrix
+reduced.eff = function(adj.mat)
+{
+  ##calculate the average efficiencies for the network
+  init.eff = avg.efficiency(adj.mat)
+  
+  ##generate networks by removing the top 3 most connected nodes
+  ##calculate the average efficiencies for the reduced networks
+  reduced.eff = -1
+  
+  ##find and remove the top 3 most connected nodes for the matrix
+  reduced.net = adj.mat
+  degree.seq = colSums(reduced.net)
+  for(j in 1:3)
+  {
+    top = sort(degree.seq, decreasing = TRUE)[1]
+    for(k in 1:length(degree.seq))
+    {
+      #Remove the top valued node from the matrix
+      if(degree.seq[k] == top)
+      {
+        degree.seq = degree.seq[-k]
+        reduced.net = reduced.net[-k,-k]
+        break
+      }
+    }
+  }
+  reduced.eff = avg.efficiency(reduced.net)
+  
+  ##calculate the percent reduction
+  perc.reduct = (init.eff - reduced.eff) / init.eff
+  
+  output.mat = matrix(c(init.eff, reduced.eff, perc.reduct), nrow = 1, ncol = 3)
+  colnames(output.mat) = c("init.eff", "reduced.eff", "%_reduct")
+  
+  return (output.mat)
+}
+
+
+
+
+
 ##Verify correctness
 library(igraph)
 mytest = c(3,3,3,2,1,1,1)
@@ -133,5 +181,8 @@ avg.efficiency(mytest)
 start = Sys.time()
 avg.efficiency(dolphin.observed.mat)
 end = Sys.time()
+
+
+
 
 
