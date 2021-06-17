@@ -54,12 +54,31 @@ for (i in 1:nrow(pairs.numbers.df))
 }
 
 
- 
 ## Use Markov Chain Monte Carlo simulation to calculate 
 ##the reduction in efficiency after the top three dolphins are removed
+##***already completed simulation of 1000, results in "dolphin_network_efficiency.csv"
 start = Sys.time()
-efficiency.table = MCMC.eff(dolphin.observed.mat, 10, burn = 10000, save.every = 100)
+efficiency.table = MCMC.eff(dolphin.observed.mat, 1000, burn = 10000, save.every = 100)
 end = Sys.time()
+
+##calculate the observed reduction in efficiency
+##***results in "observed_efficiency_reduction.csv"
+observed.eff.reduct = reduced.eff(dolphin.observed.mat)
+
+##calculate the p-value for the proportion of random networks
+##with efficiency reductions less than the observed reduction
+perc.reduct.vec = as.numeric(efficiency.table[,"%_reduct"])
+less.than.obs = numeric(length(perc.reduct.vec))
+for(i in 1:length(less.than.obs))
+{
+  if(perc.reduct.vec[i] < observed.eff.reduct[, "%_reduct"])
+  {
+    less.than.obs[i] = 1
+  }
+}
+p.val = mean(less.than.obs)
+
+                             
 
 
 
