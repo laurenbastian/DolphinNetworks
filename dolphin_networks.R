@@ -3,6 +3,7 @@ setwd("~/Blackwell Scholars Workshop/dolphins/DolphinNetworks")
 
 ## load the multiplex package and read file
 library("multiplex")
+library("igraph")
 pairs = read.gml("dolphins.gml")
 
 ## object used for finding degree of each node
@@ -58,7 +59,7 @@ for (i in 1:nrow(pairs.numbers.df))
 ##the reduction in efficiency after the top three dolphins are removed
 ##***already completed simulation of 1000, results in "dolphin_network_efficiency.csv"
 start = Sys.time()
-efficiency.table = MCMC.eff(dolphin.observed.mat, 1000, burn = 10000, save.every = 100)
+efficiency.table = MCMC.eff(dolphin.observed.mat, 10000, burn = 10000, save.every = 100)
 end = Sys.time()
 
 ##calculate the observed reduction in efficiency
@@ -78,7 +79,17 @@ for(i in 1:length(less.than.obs))
 }
 p.val = mean(less.than.obs)
 
-                             
-
+dolph.obs.graph = read.graph("dolphins.gml", format = "gml")
+set.seed = 100
+plot(dolph.obs.graph, 
+     vertex.size = 8, 
+     vertex.frame.color = "NA", 
+     vertex.color = "#72aaff", 
+     vertex.label.cex = 0.6, 
+     vertex.label.color = "black", 
+     vertex.label.family = "sans",
+     edge.width = 1,
+     edge.color = "light gray",
+     layout = layout_with_lgl(dolph.obs.graph))
 
 

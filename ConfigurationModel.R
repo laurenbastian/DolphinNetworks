@@ -160,3 +160,6 @@ for (i in 1:length(test.nets))
 
 barplot(height = table(test.dist), main = "Frequency of Randomly Generated Networks")
 
+start = Sys.time()
+config.model(dolphin.deg.seq)
+end = Sys.time()

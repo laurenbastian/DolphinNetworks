@@ -79,20 +79,6 @@ config.valid.networks.MCMC = function(adj.mat, reps, burn = 0)
 }
 
 
-#testing
-start = Sys.time() ##approx 2 sec for 10,000 reps
-mytest.nets = config.valid.networks.MCMC(dolphin.observed.mat, reps = 10000, burn = 10000)
-end = Sys.time()
-length(unique(mytest.nets))
-
-start = Sys.time()
-single.source(mytest.nets[[1]], 1) ##aprox 0.7 sec per run
-end = Sys.time()
-
-start = Sys.time()
-avg.efficiency(mytest.nets[[1]]) ##approx. 20 sec per run
-end = Sys.time()
-
 
 ##A function that utilizes MCMC to generate random networks, removes the 
 ##top 3 most highly connected nodes, and calculates the percent reduction
