@@ -4,6 +4,10 @@ setwd("~/Blackwell Scholars Workshop/dolphins/DolphinNetworks")
 ## load the multiplex package and read file
 library("multiplex")
 library("igraph")
+source("ConfigurationModel.R")
+source("NetworkPropertyFunctions.R")
+source("MarkovChainMC.R")
+
 pairs = read.gml("dolphins.gml")
 
 ## object used for finding degree of each node
@@ -38,9 +42,7 @@ pairs.numbers.df = as.data.frame(pairs)
 for (i in 1:nrow(pairs.numbers.df))
 {
   name = as.vector(key.names.df$Name[i])
-  print(name)
   number = as.integer(key.names.df$Number[i])
-  print(number)
   
   pairs.numbers.df[pairs.numbers.df == name] = number
 }
@@ -77,6 +79,7 @@ for(i in 1:length(less.than.obs))
     less.than.obs[i] = 1
   }
 }
+se = sd(less.than.obs) / 10000
 p.val = mean(less.than.obs)
 
 dolph.obs.graph = read.graph("dolphins.gml", format = "gml")
@@ -92,4 +95,20 @@ plot(dolph.obs.graph,
      edge.color = "light gray",
      layout = layout_with_lgl(dolph.obs.graph))
 
+
+##Verify results with configuration model
+start = Sys.time()
+rand.nets = config.valid.networks(dolphin.deg.seq, 40)
+end = Sys.time()
+
+reduced.nets = matrix(data = NA, nrow = 0, ncol = 3)
+colnames(reduced.nets) = c("init.eff", "reduced.eff", "%_reduct")
+for (i in 1:length(rand.nets))
+{
+  reduced.nets = rbind(reduced.nets, reduced.eff(rand.nets[[i]]))
+}
+
+
+prev.data = read.csv("config_model_networks.csv")
+write.csv(reduced.nets, "config_model_networks.csv")
 
