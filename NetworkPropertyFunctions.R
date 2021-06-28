@@ -1,3 +1,5 @@
+library(igraph)
+
 ##This is a function that will find the shortest path
 ##between a start node and any other two nodes on a graph
 ##adj.mat: an adjacency matrix representing the graph
@@ -110,8 +112,6 @@ avg.efficiency = function(adj.mat)
 }
 
 
-
-
 ##this is a function that calculates the average efficiency
 ##of the initial matrix, created a reduced matrix missing the top
 ##3 most connected nodes, and calculates the efficiency of the 
@@ -153,24 +153,6 @@ reduced.eff = function(adj.mat)
   
   return (output.mat)
 }
-
-
-##Verify correctness
-library(igraph)
-mytest = c(3,3,3,2,1,1,1)
-mytest = config.valid.networks(mytest, 1)
-mytest = mytest[[1]]
-plot(graph_from_adjacency_matrix(mytest, mode = "undirected"))
-start.time = Sys.time()
-mydistances = single.source(mytest, 2)
-end.time = Sys.time()
-diameter(mytest)
-avg.distance(mytest)
-avg.efficiency(mytest)
-
-start = Sys.time()
-avg.efficiency(dolphin.observed.mat)
-end = Sys.time()
 
 
 
