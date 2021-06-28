@@ -1,3 +1,5 @@
+library("igraph")
+
 ## A function to generate random networks using Configuration Model
 ## given a degree sequence
 ## randomly select two stubs from stubs.vec and connect them
@@ -117,49 +119,3 @@ config.valid.networks = function(deg.seq, reps)
   ## return a list of adjacency matrices
   return (sim.matrices)
 }
-
-##Checking that the random networks are about uniformly distributed
-test = c(3,2,2,2,1)
-test.nets = config.valid.networks(test,10000)
-test.unique = unique(test.nets)
-a = test.unique[[1]]
-b = test.unique[[2]]
-c = test.unique[[3]]
-d = test.unique[[4]]
-e = test.unique[[5]]
-f = test.unique[[6]]
-
-test.dist = c()
-for (i in 1:length(test.nets))
-{
-  if (identical(test.nets[[i]], a))
-  {
-    test.dist = c(test.dist, "a")
-  }
-  if (identical(test.nets[[i]], b))
-  {
-    test.dist = c(test.dist, "b")
-  }
-  if (identical(test.nets[[i]], c))
-  {
-    test.dist = c(test.dist, "c")
-  }
-  if (identical(test.nets[[i]], d))
-  {
-    test.dist = c(test.dist, "d")
-  }
-  if (identical(test.nets[[i]], e))
-  {
-    test.dist = c(test.dist, "e")
-  }
-  if (identical(test.nets[[i]], f))
-  {
-    test.dist = c(test.dist, "f")
-  }
-}
-
-barplot(height = table(test.dist), main = "Frequency of Randomly Generated Networks")
-
-start = Sys.time()
-config.model(dolphin.deg.seq)
-end = Sys.time()
