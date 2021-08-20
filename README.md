@@ -2,7 +2,7 @@
 A research project on dolphin communication networks
 
 To run the simulation:
-1. Download dolphin_networks.R, ConfigurationModel.R, NetworkPropertyFunctions.R, and MarkovChainMC.R to a local folder
+1. Download dolphins.gml, dolphin_networks.R, ConfigurationModel.R, NetworkPropertyFunctions.R, and MarkovChainMC.R to a local folder
 2. Run dolphin_networks.R
 
 The script will produce a table of efficiencies for the the randomized networks as well as a p-value for the % reduction in efficiency
