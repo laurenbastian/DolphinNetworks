@@ -1,5 +1,5 @@
 # DolphinNetworks
-A research project on dolphin communication networks
+A short project exploring network science using a data set on dolphin communication networks. We wanted to examine the percent reduction the average efficiency of the network after targeted attacks upon said network. In this case, the top 5% of dolphins were removed from the network and the efficiency compared to the "unharmed" network. During the project two different methods were tested to generate randomized networks with the same degree sequence as the observed network. First, the configuration model, which proved to have a lengthy runtime when selecting networks with no self-lopps or multiedges. Second, the Markov Chain Monte Carlo method, which takes "snapshots" of random network configurations. The second method was significantly faster and was the primary method used for this project.
 
 To run the simulation:
 1. Download dolphins.gml, dolphin_networks.R, ConfigurationModel.R, NetworkPropertyFunctions.R, and MarkovChainMC.R to a local folder
